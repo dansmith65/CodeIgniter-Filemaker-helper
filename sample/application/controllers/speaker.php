@@ -100,6 +100,18 @@ class Speaker extends CI_Controller {
 		$data['record'] = $data['records'][0];
 		unset($data['records']);
 		
+		// FORMAT/MODIFY DATA
+		// get field location in array
+		$photo_id = array_search( array('SPK'=>'photo'), $data['fieldKeys'] );
+		// modify data
+		// base64_encode the url, to prevent CodeIgniter from clipping it after the ?
+		$data['record'][$photo_id] = site_url(array(
+			'fm_container',
+			'file',
+			base64_encode($data['record'][$photo_id])
+		));
+		$data['record'][$photo_id] = '<img src="'.$data['record'][$photo_id].'" />';
+		
 		// convert ALL new lines to html break
 		foreach( $data['record'] as &$field ){
 			$field = nl2br(trim($field));

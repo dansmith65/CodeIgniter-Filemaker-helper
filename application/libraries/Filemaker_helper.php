@@ -501,7 +501,7 @@ class Filemaker_helper {
 		$fieldName = $fieldObject->getName();
 		
 		// set $value depending on field type
-		if( $fieldType == 'text' OR $fieldType == 'number' ) {
+		if( $fieldType == 'text' OR $fieldType == 'number' OR $fieldType == 'container' ) {
 			$value = $recordObject->getField( $fieldName );
 		} elseif( $fieldType == 'date' OR $fieldType == 'time' OR $fieldType == 'timestamp' ) {
 			$value = $recordObject->getFieldAsTimestamp( $fieldName );
@@ -711,6 +711,39 @@ class Filemaker_helper {
 			}
 		}
 		return '';
+	}
+	
+	/*********************************************************************/
+	
+	/**
+	 * Use to display FileMaker container data.
+	 * 
+	 */
+	public function get_container($url)
+	{
+		// don't parse empty value
+		if ($url==FALSE)
+		{
+			return;
+		}
+		
+		// determine file type
+		$type = substr($url, 0, strpos($url, "?"));
+		$type = substr($url, strrpos($url, ".") + 1);
+		
+		// set header
+		if($type == "jpg"){
+			header('Content-type: image/jpeg');
+		}
+		else if($type == "gif"){
+			header('Content-type: image/gif');
+		}
+		else{
+			header('Content-type: application/octet-stream');
+		}
+		
+		// return container data
+		return $this->db->getContainerData($url);
 	}
 	
 }
